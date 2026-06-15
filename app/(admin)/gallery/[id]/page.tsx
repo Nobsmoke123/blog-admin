@@ -1,29 +1,16 @@
-"use client";
-
-import { use, useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { CenteredForm } from "@/components/layout/CenteredForm";
+import { getGallery, updateGallery } from "@/actions/gallery";
+import { listProjects } from "@/actions/projects";
+import { GalleryForm } from "@/components/gallery/GalleryForm";
 import { EmptyState } from "@/components/layout/EmptyState";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { FormField } from "@/components/forms/FormField";
-import { ImageUpload } from "@/components/forms/ImageUpload";
-import { Select } from "@/components/ui/Select";
-import { galleryItems } from "@/lib/mock/gallery";
-import { projects } from "@/lib/mock/projects";
 
-export default function GalleryDetailPage({
+export default async function GalleryDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params);
-  const item = galleryItems.find((g) => g.id === id);
-  const [imageUrl, setImageUrl] = useState(item?.imageUrl ?? "");
-
-  const projectOptions = projects.map((p) => ({
-    value: p.id,
-    label: p.title,
-  }));
+  const { id } = await params;
+  const [item, projects] = await Promise.all([getGallery(id), listProjects()]);
 
   if (!item) {
     return (
@@ -34,22 +21,24 @@ export default function GalleryDetailPage({
     );
   }
 
+  const updateGalleryWithId = updateGallery.bind(null, id);
+  const projectOptions = projects.map((project) => ({
+    value: project.id,
+    label: project.name,
+  }));
+
   return (
     <div className="space-y-6">
       <PageHeader title="Edit Gallery Item" backHref="/gallery" />
-      <CenteredForm>
-        <FormField label="Project" htmlFor="project">
-          <Select
-            id="project"
-            options={projectOptions}
-            defaultValue={item.projectId}
-          />
-        </FormField>
-        <FormField label="Image" htmlFor="image">
-          <ImageUpload value={imageUrl} onChange={setImageUrl} />
-        </FormField>
-        <Button type="submit">Submit</Button>
-      </CenteredForm>
+      <GalleryForm
+        action={updateGalleryWithId}
+        projectOptions={projectOptions}
+        defaultValues={{
+          project_id: item.project_id,
+          image: item.image,
+        }}
+        submitLabel="Update"
+      />
     </div>
   );
 }

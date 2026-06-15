@@ -1,34 +1,29 @@
-"use client";
-
+import { listGallery } from "@/actions/gallery";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { PaginatedTable } from "@/components/layout/PaginatedTable";
-import { galleryItems } from "@/lib/mock/gallery";
-import type { GalleryItem } from "@/types";
+import { GalleryTable } from "@/components/gallery/GalleryTable";
+import Link from "next/link";
 
-export default function GalleryPage() {
+export default async function GalleryPage() {
+  const items = await listGallery();
+
+  const galleryRows = items.map((item) => ({
+    id: item.id,
+    project_name: item.project_name,
+    image: item.image,
+  }));
+
   return (
     <div className="space-y-6">
-      <PageHeader title="Gallery" subtitle="Manage project gallery images" />
-      <PaginatedTable<GalleryItem>
-        data={galleryItems}
-        getRowHref={(item) => `/gallery/${item.id}`}
-        columns={[
-          { header: "SN", cell: () => null },
-          { header: "id", cell: (item) => item.id },
-          { header: "project", cell: (item) => item.projectTitle },
-          {
-            header: "image",
-            cell: (item) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={item.imageUrl}
-                alt={item.projectTitle}
-                className="h-10 w-14 rounded object-cover"
-              />
-            ),
-          },
-        ]}
-      />
+      <div className="flex justify-between">
+        <PageHeader title="Gallery" subtitle="Manage project gallery images" />
+        <Link
+          href="/gallery/create"
+          className="inline-flex items-center justify-center rounded-md px-4 py-2 text-md font-medium bg-foreground text-background hover:opacity-90 border border-transparent shrink-0"
+        >
+          Create Gallery Item
+        </Link>
+      </div>
+      <GalleryTable items={galleryRows} />
     </div>
   );
 }

@@ -1,52 +1,31 @@
-"use client";
-
+import { listProjects } from "@/actions/projects";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { PaginatedTable } from "@/components/layout/PaginatedTable";
-import { projects } from "@/lib/mock/projects";
-import type { Project } from "@/types";
+import { ProjectsTable } from "@/components/projects/ProjectsTable";
+import Link from "next/link";
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await listProjects();
+
+  const projectRows = projects.map((project) => ({
+    id: project.id,
+    name: project.name,
+    year: project.year,
+    live_url: project.live_url,
+    source_code: project.source_code,
+  }));
+
   return (
     <div className="space-y-6">
-      <PageHeader title="Projects" subtitle="Manage portfolio projects" />
-      <PaginatedTable<Project>
-        data={projects}
-        getRowHref={(item) => `/projects/${item.id}`}
-        columns={[
-          { header: "SN", cell: () => null },
-          { header: "id", cell: (item) => item.id },
-          { header: "project title", cell: (item) => item.title },
-          { header: "year", cell: (item) => item.year },
-          {
-            header: "live URL",
-            cell: (item) => (
-              <a
-                href={item.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-foreground underline-offset-4 hover:underline"
-              >
-                {item.liveUrl}
-              </a>
-            ),
-            className: "max-w-xs truncate",
-          },
-          {
-            header: "source code",
-            cell: (item) => (
-              <a
-                href={item.sourceCode}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-foreground underline-offset-4 hover:underline"
-              >
-                {item.sourceCode}
-              </a>
-            ),
-            className: "max-w-xs truncate",
-          },
-        ]}
-      />
+      <div className="flex justify-between">
+        <PageHeader title="Projects" subtitle="Manage portfolio projects" />
+        <Link
+          href="/projects/create"
+          className="inline-flex items-center justify-center rounded-md px-4 py-2 text-md font-medium bg-foreground text-background hover:opacity-90 border border-transparent shrink-0"
+        >
+          Create Project
+        </Link>
+      </div>
+      <ProjectsTable projects={projectRows} />
     </div>
   );
 }
