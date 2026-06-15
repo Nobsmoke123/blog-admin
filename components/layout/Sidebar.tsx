@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 import { navItems } from "@/lib/nav";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -39,6 +41,16 @@ export function Sidebar() {
           })}
         </ul>
       </nav>
+      <div className="border-t border-foreground/20 p-4">
+        <Button
+          type="button"
+          variant="secondary"
+          className="w-full"
+          onClick={() => signOut({ callbackUrl: "/auth/login" })}
+        >
+          Log out
+        </Button>
+      </div>
     </aside>
   );
 }
