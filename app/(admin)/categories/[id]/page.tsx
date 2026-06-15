@@ -1,21 +1,15 @@
-"use client";
-
-import { use } from "react";
-import { Button } from "@/components/ui/Button";
-import { CenteredForm } from "@/components/layout/CenteredForm";
+import { getCategory, updateCategory } from "@/actions/category";
+import { CategoryForm } from "@/components/categories/CategoryForm";
 import { EmptyState } from "@/components/layout/EmptyState";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { FormField } from "@/components/forms/FormField";
-import { Input } from "@/components/ui/Input";
-import { categories } from "@/lib/mock/categories";
 
-export default function CategoryDetailPage({
+export default async function CategoryDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params);
-  const category = categories.find((c) => c.id === id);
+  const { id } = await params;
+  const category = await getCategory(id);
 
   if (!category) {
     return (
@@ -26,15 +20,16 @@ export default function CategoryDetailPage({
     );
   }
 
+  const updateCategoryWithId = updateCategory.bind(null, id);
+
   return (
     <div className="space-y-6">
       <PageHeader title="Edit Category" backHref="/categories" />
-      <CenteredForm>
-        <FormField label="Category name" htmlFor="name">
-          <Input id="name" defaultValue={category.name} />
-        </FormField>
-        <Button type="submit">Submit</Button>
-      </CenteredForm>
+      <CategoryForm
+        action={updateCategoryWithId}
+        defaultName={category.name}
+        submitLabel="Update"
+      />
     </div>
   );
 }

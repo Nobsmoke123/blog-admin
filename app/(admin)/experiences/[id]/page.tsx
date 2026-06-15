@@ -1,22 +1,20 @@
-"use client";
-
-import { use } from "react";
-import { Button } from "@/components/ui/Button";
-import { CenteredForm } from "@/components/layout/CenteredForm";
+import { getExperience, updateExperience } from "@/actions/experience";
+import { listTechnologies } from "@/actions/technology";
+import { ExperienceForm } from "@/components/experiences/ExperienceForm";
 import { EmptyState } from "@/components/layout/EmptyState";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { FormField } from "@/components/forms/FormField";
-import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
-import { experiences } from "@/lib/mock/experiences";
+import { getYearOptions } from "@/lib/utils";
 
-export default function ExperienceDetailPage({
+export default async function ExperienceDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params);
-  const experience = experiences.find((e) => e.id === id);
+  const { id } = await params;
+  const [experience, technologies] = await Promise.all([
+    getExperience(id),
+    listTechnologies(),
+  ]);
 
   if (!experience) {
     return (
@@ -27,27 +25,29 @@ export default function ExperienceDetailPage({
     );
   }
 
+  const updateExperienceWithId = updateExperience.bind(null, id);
+  const technologyOptions = technologies.map((technology) => ({
+    value: technology.id,
+    label: technology.name,
+  }));
+
   return (
     <div className="space-y-6">
       <PageHeader title="Edit Experience" backHref="/experiences" />
-      <CenteredForm>
-        <FormField label="Company" htmlFor="company">
-          <Input id="company" defaultValue={experience.company} />
-        </FormField>
-        <FormField label="Role" htmlFor="role">
-          <Input id="role" defaultValue={experience.role} />
-        </FormField>
-        <FormField label="Duration" htmlFor="duration">
-          <Input id="duration" defaultValue={experience.duration} />
-        </FormField>
-        <FormField label="Summary" htmlFor="summary">
-          <Textarea id="summary" defaultValue={experience.summary} />
-        </FormField>
-        <FormField label="Year" htmlFor="year">
-          <Input id="year" defaultValue={experience.year} />
-        </FormField>
-        <Button type="submit">Submit</Button>
-      </CenteredForm>
+      <ExperienceForm
+        action={updateExperienceWithId}
+        defaultValues={{
+          company: experience.company,
+          role: experience.role,
+          duration: experience.duration,
+          year: experience.year,
+          summary: experience.summary,
+          technologyIds: experience.technology_ids,
+        }}
+        technologyOptions={technologyOptions}
+        yearOptions={getYearOptions()}
+        submitLabel="Update"
+      />
     </div>
   );
 }

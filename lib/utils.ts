@@ -15,7 +15,7 @@ export function totalPages(count: number, pageSize = PAGE_SIZE): number {
   return Math.max(1, Math.ceil(count / pageSize));
 }
 
-const YEAR_START = 2021;
+const YEAR_START = 2012;
 
 export function getYearOptions(): SelectOption[] {
   const currentYear = new Date().getFullYear();

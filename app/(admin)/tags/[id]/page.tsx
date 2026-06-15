@@ -1,21 +1,15 @@
-"use client";
-
-import { use } from "react";
-import { Button } from "@/components/ui/Button";
-import { CenteredForm } from "@/components/layout/CenteredForm";
+import { getTag, updateTag } from "@/actions/tag";
+import { TagForm } from "@/components/tags/TagForm";
 import { EmptyState } from "@/components/layout/EmptyState";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { FormField } from "@/components/forms/FormField";
-import { Input } from "@/components/ui/Input";
-import { tags } from "@/lib/mock/tags";
 
-export default function TagDetailPage({
+export default async function TagDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params);
-  const tag = tags.find((t) => t.id === id);
+  const { id } = await params;
+  const tag = await getTag(id);
 
   if (!tag) {
     return (
@@ -26,15 +20,16 @@ export default function TagDetailPage({
     );
   }
 
+  const updateTagWithId = updateTag.bind(null, id);
+
   return (
     <div className="space-y-6">
       <PageHeader title="Edit Tag" backHref="/tags" />
-      <CenteredForm>
-        <FormField label="Tag name" htmlFor="name">
-          <Input id="name" defaultValue={tag.name} />
-        </FormField>
-        <Button type="submit">Submit</Button>
-      </CenteredForm>
+      <TagForm
+        action={updateTagWithId}
+        defaultName={tag.name}
+        submitLabel="Update"
+      />
     </div>
   );
 }

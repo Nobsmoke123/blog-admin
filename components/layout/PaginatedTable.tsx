@@ -15,8 +15,10 @@ import { PAGE_SIZE, paginate, totalPages } from "@/lib/utils";
 
 export interface Column<T> {
   header: string;
-  cell: (item: T, index: number) => React.ReactNode;
+  // cell: (item: T, index: number) => React.ReactNode;
+  accessor?: keyof T;
   className?: string;
+  element?: React.ReactNode;
 }
 
 interface PaginatedTableProps<T> {
@@ -56,24 +58,10 @@ export function PaginatedTable<T>({
 
             return (
               <TableRow key={sn}>
-                {columns.map((column, colIndex) => {
-                  const content =
-                    colIndex === 0 && column.header === "SN"
-                      ? sn
-                      : column.cell(item, sn);
-
+                {columns.map((column) => {
                   return (
                     <TableCell key={column.header} className={column.className}>
-                      {href && column.header.toLowerCase() === "id" ? (
-                        <Link
-                          href={href}
-                          className="text-foreground underline-offset-4 hover:underline"
-                        >
-                          {content}
-                        </Link>
-                      ) : (
-                        content
-                      )}
+                      {column.element}
                     </TableCell>
                   );
                 })}

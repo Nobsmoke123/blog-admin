@@ -1,21 +1,15 @@
-"use client";
-
-import { use } from "react";
-import { Button } from "@/components/ui/Button";
-import { CenteredForm } from "@/components/layout/CenteredForm";
+import { getTechnology, updateTechnology } from "@/actions/technology";
+import { TechnologyForm } from "@/components/technologies/TechnologyForm";
 import { EmptyState } from "@/components/layout/EmptyState";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { FormField } from "@/components/forms/FormField";
-import { Input } from "@/components/ui/Input";
-import { technologies } from "@/lib/mock/technologies";
 
-export default function TechnologyDetailPage({
+export default async function TechnologyDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params);
-  const technology = technologies.find((t) => t.id === id);
+  const { id } = await params;
+  const technology = await getTechnology(id);
 
   if (!technology) {
     return (
@@ -26,15 +20,16 @@ export default function TechnologyDetailPage({
     );
   }
 
+  const updateTechnologyWithId = updateTechnology.bind(null, id);
+
   return (
     <div className="space-y-6">
       <PageHeader title="Edit Technology" backHref="/technologies" />
-      <CenteredForm>
-        <FormField label="Technology" htmlFor="name">
-          <Input id="name" defaultValue={technology.name} />
-        </FormField>
-        <Button type="submit">Submit</Button>
-      </CenteredForm>
+      <TechnologyForm
+        action={updateTechnologyWithId}
+        defaultName={technology.name}
+        submitLabel="Update"
+      />
     </div>
   );
 }
