@@ -36,7 +36,7 @@ export function CategoriesTable({ categories }: CategoriesTableProps) {
         <TableHeader>
           <TableRow>
             <TableHead>SN</TableHead>
-            <TableHead>ID</TableHead>
+            {/* <TableHead>ID</TableHead> */}
             <TableHead>Name</TableHead>
             <TableHead>Update</TableHead>
             <TableHead>Delete</TableHead>
@@ -49,7 +49,7 @@ export function CategoriesTable({ categories }: CategoriesTableProps) {
             return (
               <TableRow key={category.id}>
                 <TableCell>{sn}</TableCell>
-                <TableCell>{category.id}</TableCell>
+                {/* <TableCell>{category.id}</TableCell> */}
                 <TableCell>
                   <Link
                     href={`/categories/${category.id}`}

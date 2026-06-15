@@ -39,7 +39,7 @@ export function TasksTable({ tasks }: TasksTableProps) {
         <TableHeader>
           <TableRow>
             <TableHead>SN</TableHead>
-            <TableHead>ID</TableHead>
+            {/* <TableHead>ID</TableHead> */}
             <TableHead>Experience</TableHead>
             <TableHead>Task</TableHead>
             <TableHead>Created</TableHead>
@@ -55,7 +55,7 @@ export function TasksTable({ tasks }: TasksTableProps) {
             return (
               <TableRow key={task.id}>
                 <TableCell>{sn}</TableCell>
-                <TableCell>{task.id}</TableCell>
+                {/* <TableCell>{task.id}</TableCell> */}
                 <TableCell>
                   <span className="line-clamp-2 max-w-xs">
                     {task.experience_name}

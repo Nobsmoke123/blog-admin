@@ -40,7 +40,7 @@ export function ExperiencesTable({ experiences }: ExperiencesTableProps) {
         <TableHeader>
           <TableRow>
             <TableHead>SN</TableHead>
-            <TableHead>ID</TableHead>
+            {/* <TableHead>ID</TableHead> */}
             <TableHead>Company</TableHead>
             <TableHead>Role</TableHead>
             <TableHead>Duration</TableHead>
@@ -57,7 +57,7 @@ export function ExperiencesTable({ experiences }: ExperiencesTableProps) {
             return (
               <TableRow key={experience.id}>
                 <TableCell>{sn}</TableCell>
-                <TableCell>{experience.id}</TableCell>
+                {/* <TableCell>{experience.id}</TableCell> */}
                 <TableCell>
                   <Link
                     href={`/experiences/${experience.id}`}

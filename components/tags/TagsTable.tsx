@@ -36,7 +36,7 @@ export function TagsTable({ tags }: TagsTableProps) {
         <TableHeader>
           <TableRow>
             <TableHead>SN</TableHead>
-            <TableHead>ID</TableHead>
+            {/* <TableHead>ID</TableHead> */}
             <TableHead>Name</TableHead>
             <TableHead>Update</TableHead>
             <TableHead>Delete</TableHead>
@@ -49,7 +49,7 @@ export function TagsTable({ tags }: TagsTableProps) {
             return (
               <TableRow key={tag.id}>
                 <TableCell>{sn}</TableCell>
-                <TableCell>{tag.id}</TableCell>
+                {/* <TableCell>{tag.id}</TableCell> */}
                 <TableCell>
                   <Link href={`/tags/${tag.id}`} className="hover:underline">
                     {tag.name}

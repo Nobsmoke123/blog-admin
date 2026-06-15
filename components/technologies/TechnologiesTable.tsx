@@ -36,7 +36,7 @@ export function TechnologiesTable({ technologies }: TechnologiesTableProps) {
         <TableHeader>
           <TableRow>
             <TableHead>SN</TableHead>
-            <TableHead>ID</TableHead>
+            {/* <TableHead>ID</TableHead> */}
             <TableHead>Name</TableHead>
             <TableHead>Update</TableHead>
             <TableHead>Delete</TableHead>
@@ -49,7 +49,7 @@ export function TechnologiesTable({ technologies }: TechnologiesTableProps) {
             return (
               <TableRow key={technology.id}>
                 <TableCell>{sn}</TableCell>
-                <TableCell>{technology.id}</TableCell>
+                {/* <TableCell>{technology.id}</TableCell> */}
                 <TableCell>
                   <Link
                     href={`/technologies/${technology.id}`}
