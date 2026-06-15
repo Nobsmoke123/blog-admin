@@ -4,10 +4,11 @@ import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { CenteredForm } from "@/components/layout/CenteredForm";
 import { FormField } from "@/components/forms/FormField";
-import { ImageUpload } from "@/components/forms/ImageUpload";
+import { GalleryImageUpload } from "@/components/forms/GalleryImageUpload";
 import { Select } from "@/components/ui/Select";
 import type { GalleryState } from "@/actions/gallery";
 import type { SelectOption } from "@/types";
+import { BounceLoader } from "react-spinners";
 
 const initialState: GalleryState = {
   errors: {},
@@ -29,7 +30,7 @@ export function GalleryForm({
   defaultValues = {},
   submitLabel = "Submit",
 }: GalleryFormProps) {
-  const [state, formAction] = useActionState(action, initialState);
+  const [state, formAction, isPending] = useActionState(action, initialState);
   const [image, setImage] = useState(defaultValues.image ?? "");
 
   return (
@@ -49,7 +50,7 @@ export function GalleryForm({
       </FormField>
 
       <FormField label="Image" htmlFor="image">
-        <ImageUpload value={image} onChange={setImage} />
+        <GalleryImageUpload value={image} onChange={setImage} />
         <input type="hidden" name="image" value={image} />
         {state.errors?.image && (
           <p className="text-sm text-red-600">{state.errors.image}</p>
@@ -57,7 +58,9 @@ export function GalleryForm({
       </FormField>
 
       {state.message && <p className="text-sm text-red-600">{state.message}</p>}
-      <Button type="submit">{submitLabel}</Button>
+      <Button type="submit" disabled={isPending}>
+        {submitLabel} {isPending && <BounceLoader size={12} className="ml-3" />}
+      </Button>
     </CenteredForm>
   );
 }
