@@ -4,7 +4,7 @@ export function cn(...classes: (string | false | null | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
 }
 
-export const PAGE_SIZE = 10;
+export const PAGE_SIZE = 5;
 
 export function paginate<T>(items: T[], page: number, pageSize = PAGE_SIZE): T[] {
   const start = (page - 1) * pageSize;

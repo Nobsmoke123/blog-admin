@@ -1,54 +1,18 @@
-import { deleteExperience, listExperiences } from "@/actions/experience";
+import { listExperiences } from "@/actions/experience";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { Button } from "@/components/ui/Button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/Table";
+import { ExperiencesTable } from "@/components/experiences/ExperiencesTable";
 import Link from "next/link";
 
 export default async function ExperiencesPage() {
   const experiences = await listExperiences();
 
-  const tableData = experiences.map((experience, index) => ({
-    sn: index + 1,
+  const experienceRows = experiences.map((experience) => ({
     id: experience.id,
-    company: (
-      <Link href={`/experiences/${experience.id}`} className="hover:underline">
-        {experience.company}
-      </Link>
-    ),
+    company: experience.company,
     role: experience.role,
     duration: experience.duration,
-    created_at: (
-      <span className="line-clamp-2 max-w-xs">
-        {new Date(experience.created_at).toDateString()}
-      </span>
-    ),
-    updated_at: (
-      <span className="line-clamp-2 max-w-xs">
-        {new Date(experience.updated_at).toDateString()}
-      </span>
-    ),
-    update: (
-      <Link
-        href={`/experiences/${experience.id}`}
-        className="py-2 px-4 rounded-md bg-foreground text-background hover:opacity-90 border border-transparent"
-      >
-        Update
-      </Link>
-    ),
-    delete: (
-      <form action={deleteExperience.bind(null, experience.id)}>
-        <Button type="submit" variant="primary">
-          Delete
-        </Button>
-      </form>
-    ),
+    created_at: experience.created_at.toISOString(),
+    updated_at: experience.updated_at.toISOString(),
   }));
 
   return (
@@ -62,40 +26,7 @@ export default async function ExperiencesPage() {
           Create Experience
         </Link>
       </div>
-      <div className="space-y-4">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="">SN</TableHead>
-              <TableHead className="">ID</TableHead>
-              <TableHead className="">Company</TableHead>
-              <TableHead className="">Role</TableHead>
-              <TableHead className="">Duration</TableHead>
-              <TableHead className="">Created</TableHead>
-              <TableHead className="">Updated</TableHead>
-              <TableHead className="">Update</TableHead>
-              <TableHead className="">Delete</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {tableData.map((data, rowIndex) => {
-              const sn = rowIndex + 1;
-
-              return (
-                <TableRow key={sn}>
-                  {Object.values(data).map((value, index) => {
-                    return (
-                      <TableCell key={index} className={""}>
-                        {value}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </div>
+      <ExperiencesTable experiences={experienceRows} />
     </div>
   );
 }

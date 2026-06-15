@@ -1,28 +1,19 @@
-"use client";
-
-import { use } from "react";
-import { Button } from "@/components/ui/Button";
-import { CenteredForm } from "@/components/layout/CenteredForm";
+import { getTask, updateTask } from "@/actions/task";
+import { listExperiences } from "@/actions/experience";
+import { TaskForm } from "@/components/tasks/TaskForm";
 import { EmptyState } from "@/components/layout/EmptyState";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { FormField } from "@/components/forms/FormField";
-import { Textarea } from "@/components/ui/Textarea";
-import { Select } from "@/components/ui/Select";
-import { experiences } from "@/lib/mock/experiences";
-import { tasks } from "@/lib/mock/tasks";
 
-export default function TaskDetailPage({
+export default async function TaskDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params);
-  const task = tasks.find((t) => t.id === id);
-
-  const experienceOptions = experiences.map((e) => ({
-    value: e.id,
-    label: e.company,
-  }));
+  const { id } = await params;
+  const [task, experiences] = await Promise.all([
+    getTask(id),
+    listExperiences(),
+  ]);
 
   if (!task) {
     return (
@@ -33,22 +24,25 @@ export default function TaskDetailPage({
     );
   }
 
+  const experienceOptions = experiences.map((experience) => ({
+    value: experience.id,
+    label: experience.company,
+  }));
+
+  const updateTaskWithId = updateTask.bind(null, id);
+
   return (
     <div className="space-y-6">
       <PageHeader title="Edit Task" backHref="/tasks" />
-      <CenteredForm>
-        <FormField label="Task" htmlFor="task">
-          <Textarea id="task" defaultValue={task.task} />
-        </FormField>
-        <FormField label="Experience" htmlFor="experience">
-          <Select
-            id="experience"
-            options={experienceOptions}
-            defaultValue={task.experienceId}
-          />
-        </FormField>
-        <Button type="submit">Submit</Button>
-      </CenteredForm>
+      <TaskForm
+        action={updateTaskWithId}
+        experienceOptions={experienceOptions}
+        defaultValues={{
+          task: task.task,
+          experience_id: task.experience_id,
+        }}
+        submitLabel="Update"
+      />
     </div>
   );
 }
