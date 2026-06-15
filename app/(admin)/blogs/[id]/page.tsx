@@ -1,38 +1,21 @@
-"use client";
-
-import { use, useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { CenteredForm } from "@/components/layout/CenteredForm";
+import { getBlog, updateBlog } from "@/actions/blog";
+import { listCategories } from "@/actions/category";
+import { listTags } from "@/actions/tag";
+import { BlogForm } from "@/components/blogs/BlogForm";
 import { EmptyState } from "@/components/layout/EmptyState";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { FormField } from "@/components/forms/FormField";
-import { RichTextEditor } from "@/components/forms/RichTextEditor";
-import { Input } from "@/components/ui/Input";
-import { MultiSelect } from "@/components/ui/MultiSelect";
-import { Select } from "@/components/ui/Select";
-import { blogs } from "@/lib/mock/blogs";
-import { categories } from "@/lib/mock/categories";
-import { tags } from "@/lib/mock/tags";
 
-export default function BlogDetailPage({
+export default async function BlogDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params);
-  const blog = blogs.find((b) => b.id === id);
-  const [content, setContent] = useState(blog?.content ?? "");
-  const [tagIds, setTagIds] = useState<string[]>(blog?.tagIds ?? []);
-
-  const categoryOptions = categories.map((c) => ({
-    value: c.id,
-    label: c.name,
-  }));
-
-  const tagOptions = tags.map((t) => ({
-    value: t.id,
-    label: t.name,
-  }));
+  const { id } = await params;
+  const [blog, categories, tags] = await Promise.all([
+    getBlog(id),
+    listCategories(),
+    listTags(),
+  ]);
 
   if (!blog) {
     return (
@@ -43,39 +26,33 @@ export default function BlogDetailPage({
     );
   }
 
+  const updateBlogWithId = updateBlog.bind(null, id);
+  const categoryOptions = categories.map((category) => ({
+    value: category.id,
+    label: category.name,
+  }));
+  const tagOptions = tags.map((tag) => ({
+    value: tag.id,
+    label: tag.name,
+  }));
+
   return (
     <div className="space-y-6">
       <PageHeader title="Edit Blog Post" backHref="/blogs" />
-      <CenteredForm>
-        <FormField label="Title" htmlFor="title">
-          <Input id="title" defaultValue={blog.title} />
-        </FormField>
-        <FormField label="Category" htmlFor="category">
-          <Select
-            id="category"
-            options={categoryOptions}
-            defaultValue={blog.categoryId}
-          />
-        </FormField>
-        <FormField label="Tags">
-          <MultiSelect
-            options={tagOptions}
-            value={tagIds}
-            onChange={setTagIds}
-          />
-        </FormField>
-        <FormField label="Content" htmlFor="content">
-          <RichTextEditor
-            id="content"
-            value={content}
-            onChange={setContent}
-          />
-        </FormField>
-        <FormField label="Read time" htmlFor="readTime">
-          <Input id="readTime" defaultValue={blog.readTime} placeholder="e.g. 8 min" />
-        </FormField>
-        <Button type="submit">Submit</Button>
-      </CenteredForm>
+      <BlogForm
+        action={updateBlogWithId}
+        defaultValues={{
+          title: blog.title,
+          summary: blog.summary,
+          read_time: blog.read_time,
+          category_id: blog.category_id,
+          content: blog.content,
+          tagIds: blog.tag_ids,
+        }}
+        categoryOptions={categoryOptions}
+        tagOptions={tagOptions}
+        submitLabel="Update"
+      />
     </div>
   );
 }
