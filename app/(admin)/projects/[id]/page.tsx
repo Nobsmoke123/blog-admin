@@ -32,6 +32,7 @@ export default async function ProjectDetailPage({
     value: category.id,
     label: category.name,
   }));
+
   const technologyOptions = technologies.map((technology) => ({
     value: technology.id,
     label: technology.name,
@@ -51,7 +52,6 @@ export default async function ProjectDetailPage({
           summary: project.summary,
           overview: project.overview,
           year: project.year,
-          image: project.image,
           cover_image: project.cover_image,
           live_url: project.live_url,
           source_code: project.source_code,
