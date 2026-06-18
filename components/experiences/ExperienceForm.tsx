@@ -40,7 +40,7 @@ export function ExperienceForm({
   yearOptions,
   submitLabel = "Submit",
 }: ExperienceFormProps) {
-  const [state, formAction] = useActionState(action, initialState);
+  const [state, formAction, isPending] = useActionState(action, initialState);
   const [technologyIds, setTechnologyIds] = useState<string[]>(
     defaultValues.technologyIds ?? [],
   );
@@ -122,7 +122,9 @@ export function ExperienceForm({
         </FormField>
       )}
       {state.message && <p className="text-sm text-red-600">{state.message}</p>}
-      <Button type="submit">{submitLabel}</Button>
+      <Button type="submit" disabled={isPending} aria-disabled={isPending}>
+        {submitLabel}
+      </Button>
     </CenteredForm>
   );
 }

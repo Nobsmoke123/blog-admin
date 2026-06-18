@@ -25,7 +25,7 @@ export function TechnologyForm({
   defaultName = "",
   submitLabel = "Submit",
 }: TechnologyFormProps) {
-  const [state, formAction] = useActionState(action, initialState);
+  const [state, formAction, isPending] = useActionState(action, initialState);
 
   return (
     <CenteredForm action={formAction}>
@@ -40,10 +40,10 @@ export function TechnologyForm({
           <p className="text-sm text-red-600">{state.errors.name}</p>
         )}
       </FormField>
-      {state.message && (
-        <p className="text-sm text-red-600">{state.message}</p>
-      )}
-      <Button type="submit">{submitLabel}</Button>
+      {state.message && <p className="text-sm text-red-600">{state.message}</p>}
+      <Button type="submit" disabled={isPending} aria-disabled={isPending}>
+        {submitLabel}
+      </Button>
     </CenteredForm>
   );
 }

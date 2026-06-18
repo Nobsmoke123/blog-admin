@@ -29,7 +29,7 @@ export function TaskForm({
   defaultValues = {},
   submitLabel = "Submit",
 }: TaskFormProps) {
-  const [state, formAction] = useActionState(action, initialState);
+  const [state, formAction, isPending] = useActionState(action, initialState);
 
   return (
     <CenteredForm action={formAction}>
@@ -60,7 +60,9 @@ export function TaskForm({
       </FormField>
 
       {state.message && <p className="text-sm text-red-600">{state.message}</p>}
-      <Button type="submit">{submitLabel}</Button>
+      <Button type="submit" disabled={isPending} aria-disabled={isPending}>
+        {submitLabel}
+      </Button>
     </CenteredForm>
   );
 }

@@ -38,7 +38,7 @@ export function BlogForm({
   tagOptions = [],
   submitLabel = "Submit",
 }: BlogFormProps) {
-  const [state, formAction] = useActionState(action, initialState);
+  const [state, formAction, isPending] = useActionState(action, initialState);
   const [content, setContent] = useState(defaultValues.content ?? "");
   const [tagIds, setTagIds] = useState<string[]>(defaultValues.tagIds ?? []);
 
@@ -121,7 +121,9 @@ export function BlogForm({
       </FormField>
 
       {state.message && <p className="text-sm text-red-600">{state.message}</p>}
-      <Button type="submit">{submitLabel}</Button>
+      <Button type="submit" disabled={isPending} aria-disabled={isPending}>
+        {submitLabel}
+      </Button>
     </CenteredForm>
   );
 }

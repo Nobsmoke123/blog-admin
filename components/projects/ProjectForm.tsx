@@ -13,6 +13,7 @@ import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
 import type { ProjectState } from "@/actions/projects";
 import type { SelectOption } from "@/types";
+import { BounceLoader } from "react-spinners";
 
 const initialState: ProjectState = {
   errors: {},
@@ -49,7 +50,7 @@ export function ProjectForm({
   defaultValues = {},
   submitLabel = "Submit",
 }: ProjectFormProps) {
-  const [state, formAction] = useActionState(action, initialState);
+  const [state, formAction, isPending] = useActionState(action, initialState);
   // const [image, setImage] = useState(defaultValues.image ?? "");
   const [coverImage, setCoverImage] = useState(defaultValues.cover_image ?? "");
   const [overview, setOverview] = useState(defaultValues.overview ?? "");
@@ -193,7 +194,9 @@ export function ProjectForm({
       </FormField>
 
       {state.message && <p className="text-sm text-red-600">{state.message}</p>}
-      <Button type="submit">{submitLabel}</Button>
+      <Button type="submit" disabled={isPending} aria-disabled={isPending}>
+        {submitLabel}
+      </Button>
     </CenteredForm>
   );
 }

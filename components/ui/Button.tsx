@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { BounceLoader } from "react-spinners";
 
 type ButtonVariant = "primary" | "secondary" | "ghost";
 
@@ -18,17 +19,23 @@ export function Button({
   variant = "primary",
   className,
   type = "button",
+  disabled,
+  children,
   ...props
 }: ButtonProps) {
   return (
     <button
       type={type}
+      disabled={disabled}
       className={cn(
         "inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/40 disabled:pointer-events-none disabled:opacity-50",
         variantStyles[variant],
         className,
       )}
       {...props}
-    />
+    >
+      {children}
+      {disabled && <BounceLoader size={12} className="ml-3" />}
+    </button>
   );
 }

@@ -58,8 +58,8 @@ export function GalleryForm({
       </FormField>
 
       {state.message && <p className="text-sm text-red-600">{state.message}</p>}
-      <Button type="submit" disabled={isPending}>
-        {submitLabel} {isPending && <BounceLoader size={12} className="ml-3" />}
+      <Button type="submit" disabled={isPending} aria-disabled={isPending}>
+        {submitLabel}
       </Button>
     </CenteredForm>
   );
