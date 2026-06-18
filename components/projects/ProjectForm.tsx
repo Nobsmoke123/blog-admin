@@ -57,6 +57,18 @@ export function ProjectForm({
     defaultValues.technologyIds ?? [],
   );
 
+  const handleOverViewChange = (value: string) => {
+    setOverview(
+      value
+        .replace("h1", "p")
+        .replace("<div><br></div>", " ")
+        .replace(
+          '<p style="caret-color: rgb(255, 255, 255); color: rgb(255, 255, 255); text-decoration-thickness: auto; text-decoration-style: solid;"><br></p>',
+          " ",
+        ),
+    );
+  };
+
   return (
     <CenteredForm action={formAction}>
       <FormField label="Project title" htmlFor="name">
@@ -98,7 +110,11 @@ export function ProjectForm({
       </FormField>
 
       <FormField label="Overview" htmlFor="overview">
-        <RichTextEditor id="overview" value={overview} onChange={setOverview} />
+        <RichTextEditor
+          id="overview"
+          value={overview}
+          onChange={handleOverViewChange}
+        />
         <input type="hidden" name="overview" value={overview} />
         {state.errors?.overview && (
           <p className="text-sm text-red-600">{state.errors.overview}</p>
